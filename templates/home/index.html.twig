@@ -4,6 +4,21 @@
 
 <h1>Welcome</h1>
 
-<a href="{{ path('product_index') }}">Products</a>
+{% if app.user %}
+    <p>
+        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+    <br>
+        <a href="{{ path('product_index') }}">Products</a>
+    </p>
+
+    {% else %}
+
+    <p>
+        <a href="{{ path('app_register') }}">Register</a>
+        <a href="{{ path('app_login') }}">Log in</a>
+    </p>
+{% endif %}
+
+
 
 {% endblock %}
