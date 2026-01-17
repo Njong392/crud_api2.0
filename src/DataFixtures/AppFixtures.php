@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Product;
@@ -25,5 +26,12 @@ class AppFixtures extends Fixture
         $manager->persist($product);
 
         $manager->flush();
+
+        $user = new User();
+        $user->setEmail('testuser@example.com');
+        $user->setPassword('test123');
+
+        $manager->flush();
     }
+
 }
