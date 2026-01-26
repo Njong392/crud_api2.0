@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -11,27 +12,16 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $product = new Product();
-        $product->setName("Product One");
-        $product->setDescription("This is the first product");
-        $product->setSize(100);
-        
-        $manager->persist($product);
+        $category = new Category();
 
-        $product = new Product();
-        $product->setName("Product Two");
-        $product->setDescription("This is the second product");
-        $product->setSize(200);
+        $category->setName('Accessories');
+        $manager->persist($category);
 
-        $manager->persist($product);
-
+        $category = new Category();
+        $category->setName('Gadgets');
+        $manager->persist($category);
         $manager->flush();
 
-        $user = new User();
-        $user->setEmail('testuser@example.com');
-        $user->setPassword('test123');
-
-        $manager->flush();
     }
 
 }

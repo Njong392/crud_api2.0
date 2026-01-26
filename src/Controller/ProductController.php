@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,26 +12,30 @@ use App\Form\ProductType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 
 final class ProductController extends AbstractController
 {
-    #[Route('/product', name: 'product_index')]
+    #[Route('/products', name: 'product_index')]
     public function index(ProductRepository $repository, LoggerInterface $logger): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
-        $products = $repository->findAll();
-        $logger->info('Products fetched');
+        // access the current logged in user
+        $currentUser = $this->getUser();
+
+
+        $products = $repository->findByCategory($currentUser);
+
+        $logger->info('Products fetched {products}', ['products'=> $products]);
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
         ]);
     }
 
-     #[Route('/product/new', name:'product_new')]
+    #[Route('/product/new', name: 'product_new')]
     public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger)
-    {   
+    {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $product = new Product();
 
@@ -38,7 +43,8 @@ final class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product->setCreator($this->getUser());
             $em->persist($product);
             $em->flush();
             $logger->info('Product created successfully, {product}', ['product' => $product]);
@@ -57,10 +63,18 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/product/{id<\d+>}', name:'product_show')]
+    #[Route('/product/{id<\d+>}', name: 'product_show')]
     public function show(Product $product, LoggerInterface $logger)
-    {   
+    {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $currentUser = $this->getUser();
+
+        if($currentUser instanceof User){
+            $userId = $currentUser->getId();
+        }
+
+        $isCurrentUser = $product->getCreator()->getId() === $userId;
 
         if (!$product) {
             $this->addFlash('notice', 'No such product exists!');
@@ -70,11 +84,12 @@ final class ProductController extends AbstractController
 
         $logger->info('Product, {product}', ['product' => $product]);
         return $this->render('product/show.html.twig', [
-            'product' => $product
+            'product' => $product,
+            'isCurrentUser'=> $isCurrentUser
         ]);
     }
 
-    #[Route('/product/{id<\d+>}/edit', name:'product_edit')]
+    #[Route('/product/{id<\d+>}/edit', name: 'product_edit')]
     public function edit(Product $product, Request $request, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
@@ -82,42 +97,43 @@ final class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-           
-            $em->flush();
-            $logger->info('Product updated, {product}', ['product'=> $product]);
 
-            $this->addFlash('notice', 'Product updated successfully');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $em->flush();
+                $logger->info('Product updated, {product}', ['product' => $product]);
 
-            return $this->redirectToRoute('product_show', [
-                'id' => $product->getId()
-            ]);
-        } else{
-            $logger->error('Validation error occurred while updating {product}', ['product'=> $product]);
+                $this->addFlash('notice', 'Product updated successfully');
+
+                return $this->redirectToRoute('product_show', [
+                    'id' => $product->getId()
+                ]);
+            } else {
+                $logger->error('Validation error occurred while updating {product}', ['product' => $product]);
+            }
         }
 
         return $this->render('product/edit.html.twig', [
-            'form' => $form
+            'form' => $form->createView(),
+            'id' => $product->getId()
         ]);
     }
 
-    #[Route('/product/{id<\d+>}/delete', name:'product_delete')]
+    #[Route('/product/{id<\d+>}/delete', name: 'product_delete')]
     public function delete(Request $request, Product $product, EntityManagerInterface $em, LoggerInterface $logger)
-    {   
+    {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-        if($request->isMethod('POST'))
-            {
-                $em->remove($product);
-                $em->flush();
-                $logger->info('Product deleted');
+        if ($request->isMethod('POST')) {
+            $em->remove($product);
+            $em->flush();
+            $logger->info('Product deleted');
 
-                $this->addFlash('notice','Product deleted!');
+            $this->addFlash('notice', 'Product deleted!');
 
-                return $this->redirectToRoute('product_index');
-            }
+            return $this->redirectToRoute('product_index');
+        }
         return $this->render('product/delete.html.twig', [
             'id' => $product->getId(),
         ]);
     }
 }
-

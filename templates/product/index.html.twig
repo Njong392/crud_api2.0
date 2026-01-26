@@ -3,6 +3,7 @@
 {% block title %}Hello ProductController!{% endblock %}
 
 {% block body %}
+
 <h1>Products</h1>
 
 <a href="{{ path('product_new') }}">New Product</a>
@@ -13,6 +14,7 @@
             <th>Name</th>
             <th>Description</th>
             <th>Size</th>
+            <th>Category</th>
         </tr>
     </thead>
     <tbody>
@@ -25,8 +27,11 @@
                 </td>
                 <td>{{ product.description }}</td>
                 <td>{{ product.size }}</td>
+                <td>{{ product.category.name }}</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<a href="{{ path('app_home') }}">Home</a>
 {% endblock %}

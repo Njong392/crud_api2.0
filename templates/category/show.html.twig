@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<h2>Products in the
+		{{category.name}}
+		category</h2>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Size</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for product in category.products %}
+				<tr>
+					<td>
+						<a href="{{ path('product_show', {'id': product.id}) }}">
+							{{ product.name }}
+						</a>
+					</td>
+					<td>{{ product.description }}</td>
+					<td>{{ product.size }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('category_index') }}">
+		Categories
+	</a>
+
+{% endblock %}

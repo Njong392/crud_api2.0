@@ -38,7 +38,7 @@ class Product
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -62,10 +62,41 @@ class Product
         return $this->size;
     }
 
-    public function setSize(int $size): static
+    public function setSize(?int $size): static
     {
         $this->size = $size;
 
         return $this;
     }
+
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy:'products')]
+    private Category $category;
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy:'products')]
+
+    private User $creator;
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator)
+    {
+        $this->creator = $creator;
+        return $this;
+    }
+
+
 }

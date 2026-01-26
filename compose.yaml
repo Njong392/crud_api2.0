@@ -27,6 +27,16 @@ services:
       - db_data:/var/lib/mysql
     expose:
       - 3306:3306
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: database
+      PMA_ARMITRARY: 1
+
 
 volumes:
   db_data:

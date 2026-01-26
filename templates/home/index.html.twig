@@ -9,6 +9,8 @@
         You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
     <br>
         <a href="{{ path('product_index') }}">Products</a>
+    <br>
+    <a href="{{ path('category_index') }}">Categories</a>
     </p>
 
     {% else %}

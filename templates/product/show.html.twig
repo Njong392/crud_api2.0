@@ -2,27 +2,60 @@
 
 {% block body %}
 
-<h1>Product</h1>
+	<h1>Product</h1>
 
-<a href="{{ path('product_index') }}">Products</a>
-<table>
-    <tbody>
-            <tr>
-                <th>Name</th>
-                <td>{{ product.name }}</td>
-            </tr>
-             <tr>
-                <th>Description</th>
-                <td>{{ product.description }}</td>
-            </tr>
-             <tr>
-                <th>Size</th>
-                <td>{{ product.size }}</td>
-            </tr>
-    </tbody>
-</table>
+	<a href="{{ path('product_index') }}">Products</a>
+	<table>
+		<tbody>
+			<tr>
+				<th>Name</th>
+				<td>{{ product.name }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ product.description }}</td>
+			</tr>
+			<tr>
+				<th>Size</th>
+				<td>{{ product.size }}</td>
+			</tr>
+			<tr>
+				<th>Category</th>
+				<td>{{ product.category.name }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-<a href="{{ path('product_edit', {'id': product.id})}}">Edit</a>
-<a href="{{ path('product_delete', {'id': product.id})}}">Delete</a>
+	{% if isCurrentUser %}
+		<a href="{{ path('product_edit', {'id': product.id})}}">Edit</a>
+		<a href="{{ path('product_delete', {'id': product.id})}}">Delete</a>
+	{% endif %}
+
+	<h3>Similar Products:</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Size</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for prod in product.category.products %}
+				{% if prod.id != product.id %}
+					<tr>
+						<td>
+							<a href="{{ path('product_show', {'id': prod.id}) }}">
+								{{ prod.name }}
+							</a>
+						</td>
+						<td>{{ prod.description }}</td>
+						<td>{{ prod.size }}</td>
+					</tr>
+				{% endif %}
+
+			{% endfor %}
+		</tbody>
+	</table>
 
 {% endblock %}
