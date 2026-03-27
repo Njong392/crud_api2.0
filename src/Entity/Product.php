@@ -28,6 +28,9 @@ class Product
     #[Assert\Positive]
     private ?int $size = null;
 
+    #[ORM\Column(type: 'string')]
+    private string $imageFilename;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,6 +68,18 @@ class Product
     public function setSize(?int $size): static
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getImageFilename(): string
+    {
+        return $this->imageFilename;
+    }
+
+    public function setImageFilename(string $imageFilename): self
+    {
+        $this->imageFilename = $imageFilename;
 
         return $this;
     }

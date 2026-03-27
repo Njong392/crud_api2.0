@@ -1,37 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}Hello ProductController!
+{% endblock %}
 
 {% block body %}
 
-<h1>Products</h1>
+	<h1>Products</h1>
 
-<a href="{{ path('product_new') }}">New Product</a>
+	<a href="{{ path('product_new') }}">New Product</a>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Size</th>
-            <th>Category</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-            <tr>
-                <td>
-                    <a href="{{ path('product_show', {'id': product.id}) }}">
-                        {{ product.name }}
-                    </a>
-                </td>
-                <td>{{ product.description }}</td>
-                <td>{{ product.size }}</td>
-                <td>{{ product.category.name }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+	<br></br>
 
-<a href="{{ path('app_home') }}">Home</a>
+	<form method="get" action="{{ path('product_index') }}">
+		<input type="search" name="q" placeholder="Search product" value="{{ search }}">
+		<input type="submit" value="Search">
+	</form>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Size</th>
+				<th>Category</th>
+				<th>Images</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for product in paginator %}
+				<tr>
+					<td>
+						<a href="{{ path('product_show', {'id': product.id}) }}">
+							{{ product.name }}
+						</a>
+					</td>
+					<td>{{ product.description }}</td>
+					<td>{{ product.size }}</td>
+					<td>{{ product.category.name }}</td>
+					<td>
+						{% if product.imageFilename %}
+							<img src="{{ asset('uploads/images/' ~ product.imageFilename) }}" alt="{{ product.name }}" style="max-width: 200px; max-height: 200px;">
+						{% else %}
+							No image
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div>
+		{% if hasPreviousPage %}
+			<a href="?page={{ currentPage - 1 }}">Previous</a>
+		{% endif %}
+
+		Page
+		{{ currentPage }}
+		of
+		{{ totalPages }}
+
+		{% if hasNextPage %}
+			<a href="?page={{ currentPage + 1 }}">Next</a>
+		{% endif %}
+
+	</div>
+
+	<a href="{{ path('app_home') }}">Home</a>
 {% endblock %}

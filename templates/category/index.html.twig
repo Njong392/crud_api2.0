@@ -1,33 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}Hello ProductController!
+{% endblock %}
 
 {% block body %}
 
-<h1>Categories</h1>
+	<h1>Categories</h1>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Number of products</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>
-                     <a href="{{ path('category_show', {'id': category.id}) }}">
-                        {{ category.name }}
-                    </a>
-                </td>
-                 <td>
-                    {{category.products|length}}
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Number of products</th>
+				{% if is_granted('ROLE_ADMIN') %}
+					<th>Actions</th>
+				{% endif %}
 
-<a href="{{ path('app_home') }}">Home</a>
+			</tr>
+		</thead>
+		<tbody>
+			{% for category in categories %}
+				<tr>
+					<td>
+						<a href="{{ path('category_show', {'id': category.id}) }}">
+							{{ category.name }}
+						</a>
+					</td>
+					<td>
+						{{category.products|length}}
+					</td>
+					{% if is_granted('ROLE_ADMIN') and (category.name == 'Uncategorized') %}
+						<td>
+							Default
+						</td>
+					{% else %}
+						<td>
+							<a href="{{ path('category_delete', {'id': category.id}) }}">
+								Delete
+							</a>
+						</td>
+					{% endif %}
+
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_home') }}">Home</a>
 {% endblock %}

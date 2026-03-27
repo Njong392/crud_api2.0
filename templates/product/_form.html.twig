@@ -1,13 +1,15 @@
 {{ form_start(form, {'attr' : {'novalidate': 'novalidate'}}) }}
 
-    {{ form_row(form.name) }}
+{{ form_row(form.name) }}
 
-    {{ form_row(form.description) }}
+{{ form_row(form.description) }}
 
-    {{ form_row(form.size) }}
+{{ form_row(form.size) }}
 
-     {{ form_row(form.category) }}
+{{ form_row(form.category) }}
 
-    {{ form_row(form.save, {'label': 'Save'}) }}
+{{ form_row(form.image) }}
+
+{{ form_row(form.save, {'label': 'Save'}) }}
 
 {{ form_end(form) }}

@@ -23,6 +23,17 @@
 				<th>Category</th>
 				<td>{{ product.category.name }}</td>
 			</tr>
+			<tr>
+
+				<th>Image</th>
+				<td>
+					{% if product.imageFilename %}
+						<img src="{{ asset('uploads/images/' ~ product.imageFilename) }}" alt="{{ product.name }}" style="max-width: 500px; max-height: 500px;">
+					{% else %}
+						No image
+					{% endif %}
+				</td>
+			</tr>
 		</tbody>
 	</table>
 
@@ -31,31 +42,42 @@
 		<a href="{{ path('product_delete', {'id': product.id})}}">Delete</a>
 	{% endif %}
 
-	<h3>Similar Products:</h3>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Description</th>
-				<th>Size</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for prod in product.category.products %}
-				{% if prod.id != product.id %}
-					<tr>
-						<td>
-							<a href="{{ path('product_show', {'id': prod.id}) }}">
-								{{ prod.name }}
-							</a>
-						</td>
-						<td>{{ prod.description }}</td>
-						<td>{{ prod.size }}</td>
-					</tr>
-				{% endif %}
+	{% if product.category.products|length > 1 %}
+		<h3>Similar Products:</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Size</th>
+					<th>Image</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for prod in product.category.products %}
+					{% if prod.id != product.id %}
+						<tr>
+							<td>
+								<a href="{{ path('product_show', {'id': prod.id}) }}">
+									{{ prod.name }}
+								</a>
+							</td>
+							<td>{{ prod.description }}</td>
+							<td>{{ prod.size }}</td>
+							<td>
+								{% if prod.imageFilename %}
+									<img src="{{ asset('uploads/images/' ~ prod.imageFilename) }}" alt="{{ prod.name }}" style="max-width: 300px; max-height: 300px;">
+								{% else %}
+									No image
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
 
-			{% endfor %}
-		</tbody>
-	</table>
+				{% endfor %}
+			</tbody>
+		</table>
+
+	{% endif %}
 
 {% endblock %}

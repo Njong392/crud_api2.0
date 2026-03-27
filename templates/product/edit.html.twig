@@ -2,10 +2,14 @@
 
 {% block body %}
 
-<h1>Edit Product</h1>
+	<h1>Edit Product</h1>
 
-{{ include('product/_form.html.twig') }}
+	{% if product.imageFilename %}
+		<img src="{{ asset('uploads/images/' ~ filename) }}" alt="{{ product.name }}" style="max-width: 500px; max-height: 500px;">
+	{% endif %}
 
-<a href="{{ path('product_show', {'id': id})}}">Cancel</a>
+	{{ include('product/_form.html.twig') }}
+
+	<a href="{{ path('product_show', {'id': product.id})}}">Cancel</a>
 
 {% endblock %}
