@@ -18,7 +18,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-.env
-.env.docker
+/.env.docker
 
 .env.test
+/.env
